@@ -168,60 +168,12 @@ public class DrawMap : MonoBehaviour {
 			prop.sprite = generateSprite(tempRect, name, prop.color, sprite);
 		}
 	}
-
+	// 因为数据隔离问题，因此 grid 等相关数据被隔离在 drawMap 这个脚本里，这样挺好的，方便修改
 	public void updatePlayerPosition() {
 		int index = _player[0].index;
 		int x = index % _curMap.width;
 		int y = _curMap.height - index / _curMap.width - 1;
 		_player[0].sprite.GetComponent<RectTransform>().position = new Vector3(_offsetX + _gridWidth * x, _offsetY + _gridHeight * y, 1);
-	}
-
-	// origin at the left-bottom
-	private void drawBasicMap(VectorObject2D draw) {
-		// Get Transform
-		Transform trans = draw.transform;
-		int width = _curMap.width;
-		int height = _curMap.height;
-		List<Vector2> points = new List<Vector2>(8 * width * height);
-		// draw main block
-		VectorLine lines = new VectorLine("Line", points, null, 5.0f);
-		draw.vectorLine = lines;
-
-		for (int i = 0; i < width; i++) {
-			// index == offset
-			draw.vectorLine.MakeRect(new Rect(_offsetX + _gridWidth * i, _offsetY, _gridWidth, _gridHeight * height), i * 8);
-		}
-		for (int i = 0; i < height; i++) {
-			draw.vectorLine.MakeRect(new Rect(_offsetX, _offsetY + _gridHeight * i, _gridWidth * width, _gridHeight), (width + i) * 8);
-		}
-		draw.vectorLine.Draw();
-	}
-
-	// 绘制对应数据 grid
-	private void decorativeMap(VectorObject2D draw, List<gridObj> list, Color color = default(Color)) {
-		int count = list.Count;
-		int width = _curMap.width;
-		int height = _curMap.height;
-		VectorLine lines = draw.vectorLine;
-
-		List<Vector2> points = new List<Vector2>(8 * count);
-		lines = new VectorLine("Line", points, null, 5.0f);
-		// 这么些从理论上是可以节省数据内存的，lines 存储 Color 一定是有开销的
-		if (color != default(Color)) lines.SetColor(color);
-		draw.vectorLine = lines;
-		// 这是一个可优化点，可以将数据存储之后直接套用而不是每次都重新计算。
-		for (int i = 0; i < count; i++) {
-			int index = list[i].index;
-			int x = index % width;
-			int y = (height - 1) - index / width;
-			int offsetX = _offsetX + _gridWidth * x;
-			int offsetY = _offsetY + _gridHeight * y;
-			if (color == default(Color))
-				lines.SetColor(list[i].color, i * 4, (i + 1) * 4);
-			draw.vectorLine.MakeRect(new Rect(offsetX, offsetY, _gridWidth, _gridHeight), i * 8);
-		}
-
-		draw.vectorLine.Draw();
 	}
 
 	private GameObject generateSprite(Rect rect, String name = "", Color color = default(Color), Sprite sprite = null) {
@@ -238,23 +190,4 @@ public class DrawMap : MonoBehaviour {
 
 		return obj;
 	}
-
-	// 清空所有的 line 绘制，用于 display 显示关闭
-	public void showMap() {
-		if (GameManager.getInstance().isShow) {
-			for (int i = 0; i < _grids.Count; i++) {
-				clearDrawer(_grids[i]);
-			}
-		}
-		else {
-			draw();
-		}
-		// 转换
-		GameManager.getInstance().isShow = !GameManager.getInstance().isShow;
-	}
-	// 清空单个 line 绘制
-	private void clearDrawer(VectorObject2D draw) {
-		VectorLine.Destroy(ref draw.vectorLine);
-	}
-
 }
