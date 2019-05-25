@@ -91,6 +91,7 @@ public class PlayerAction {
 	public void onWall(Player player) {
 		Debug.Log("Walk hit the Wall");
 		hitOnWallCount++;
+		player.setState(PlayerState.Waiting);
 		if (hitOnWallCount == 1) {
 			PlayerAudioCtrl.getInstance().play(PlayerAudioData.HIT_WALL_CLIP, () => {
 				PlayerAudioCtrl.getInstance().play(PlayerAudioData.IS_WALL_CLIP, () => {

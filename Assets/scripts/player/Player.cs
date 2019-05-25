@@ -76,7 +76,7 @@ public class Player : MonoBehaviour {
 
 	public void setPosition(Vector2 pos) {
 		_pos = pos;
-		_utils.updatePlayerData((int)_pos.x, (int)_pos.y);
+		_utils.updatePlayerPosition((int)_pos.x, (int)_pos.y);
 	}
 
 	public Vector2 getPosition() {

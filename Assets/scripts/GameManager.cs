@@ -38,7 +38,6 @@ public class GameManager : MonoBehaviour {
 		initAudioCtrl();
 		DrawMap();
 		if (GameManagerGlobalData.isFirstTimeEnter) {
-			// 因为暂时剧情比较短，所以与 playerAudio 放在一起
 			PlayerAudioCtrl.getInstance().play(PlayerAudioData.CHAPTER_01_1);
 			PlayerAudioCtrl.getInstance().play(PlayerAudioData.SLIDER_TO_FRONT_TIPS, initGameState);
 			GameManagerGlobalData.isFirstTimeEnter = false;

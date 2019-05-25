@@ -435,7 +435,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4884796329516542, guid: 758538366b7bc28439cf0618a9715f69, type: 2}
       propertyPath: m_LocalPosition.z
-      value: 3
+      value: 2.16
       objectReference: {fileID: 0}
     - target: {fileID: 4241033782333960, guid: 758538366b7bc28439cf0618a9715f69, type: 2}
       propertyPath: m_LocalPosition.z
@@ -454,6 +454,11 @@ Prefab:
       propertyPath: m_audioClip
       value: 
       objectReference: {fileID: 8300000, guid: a86099aa106f9b144aee1947bb00c5b2, type: 3}
+    - target: {fileID: 82125895577385888, guid: 758538366b7bc28439cf0618a9715f69,
+        type: 2}
+      propertyPath: Priority
+      value: 100
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 758538366b7bc28439cf0618a9715f69, type: 2}
   m_IsPrefabParent: 0
@@ -611,12 +616,12 @@ Prefab:
     - target: {fileID: 224419020484861674, guid: 2fcadbfc85bb0234ea7c31543ac9c674,
         type: 2}
       propertyPath: m_LocalPosition.x
-      value: 132
+      value: 121
       objectReference: {fileID: 0}
     - target: {fileID: 224419020484861674, guid: 2fcadbfc85bb0234ea7c31543ac9c674,
         type: 2}
       propertyPath: m_LocalPosition.y
-      value: 211
+      value: 193.5
       objectReference: {fileID: 0}
     - target: {fileID: 224419020484861674, guid: 2fcadbfc85bb0234ea7c31543ac9c674,
         type: 2}
@@ -778,3 +783,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapPanel: {fileID: 311932140}
+  wall: {fileID: 21300000, guid: eba0daf4c8f6e0249a37a90bc9e8c539, type: 3}
+  floor: {fileID: 21300000, guid: 15f420d6f9244d643988cfae7190cb0a, type: 3}
+  player: {fileID: 21300000, guid: 08c3bca34d3802441b3eb490308ca844, type: 3}
+  stair: {fileID: 21300000, guid: 5a05de131bf94f24ab43c01b2a138be7, type: 3}
+  obstacle: {fileID: 21300000, guid: 3d0808515732b23478ba8e5589a8876e, type: 3}
+  gridPrefab: {fileID: 1762738594908750, guid: 6cdb4e241ecfc8044a9a234d3d2ede6f, type: 2}

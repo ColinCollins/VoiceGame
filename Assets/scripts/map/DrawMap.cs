@@ -9,10 +9,12 @@ public class DrawMap : MonoBehaviour {
 	private MapObj _curMap = null;
 
 	public GameObject mapPanel;
-	public Texture2D wall;
-	public Texture2D floor;
-	public Texture2D player;
-	public Texture2D stair;
+	public Sprite wall;
+	public Sprite floor;
+	public Sprite player;
+	public Sprite stair;
+	public Sprite obstacle;
+	public GameObject gridPrefab;
 
 	private int _gridWidth = 0;
 	private int _gridHeight = 0;
@@ -32,11 +34,6 @@ public class DrawMap : MonoBehaviour {
 	// 创建多个 Line 对象
 	public void Init() {
 		// 0 -> walls, 1 -> obstacle, 2 -> exit, 3 -> player 4 -> basic, 5 -> monster
-		for (int i = 0; i < 6; i++) {
-			VectorObject2D comp = createRectangle(0, 0, 0, 0, 0, Color.white);
-			comp.transform.SetParent(mapPanel.transform);
-			_grids.Add(comp);
-		}
 	}
 
 	public void Destroy() {
@@ -98,18 +95,18 @@ public class DrawMap : MonoBehaviour {
 	// 绘制地图
 	public void draw() {
 		if (_curMap == null || !GameManager.getInstance().isShow) return;
-		// draw basic map
-		drawBasicMap(_grids[4]);
-		// draw walls
-		decorativeMap(_grids[0], _walls, Color.blue);
-		// draw obstacle
-		decorativeMap(_grids[1], _obstacle, Color.red);
-		// draw monster
-		decorativeMap(_grids[5], _monster, new Color(187 / 255f, 143 / 255f, 206 / 255f, 1.0f));
-		// draw exit
-		decorativeMap(_grids[2], _exit, Color.green);
-		// draw player
-		decorativeMap(_grids[3], _player);
+		if (GameManagerGlobalData.isFirstTimeGenerateMap) {
+			generateBasicMapByImage("floor", floor);
+			generateSpecialMapImage(_walls, wall);
+			generateSpecialMapImage(_obstacle, obstacle);
+			generateSpecialMapImage(_player, player);
+			generateSpecialMapImage(_exit, stair);
+			// generateSpecialMapImage(_monster, monster);
+			GameManagerGlobalData.isFirstTimeGenerateMap = false;
+		}
+		else {
+			updatePlayerPosition();
+		}
 	}
 
 	// 分析地图数据
@@ -127,9 +124,7 @@ public class DrawMap : MonoBehaviour {
 					break;
 				// player
 				case 1:
-					_player.Add(new gridObj(i, Color.yellow, ""));
-					// keep the origin player data
-					_player.Add(new gridObj(i, Color.yellow, ""));
+					_player.Add(new gridObj(i, ""));
 					break;
 				// exit
 				case 3:
@@ -149,6 +144,36 @@ public class DrawMap : MonoBehaviour {
 		VectorObject2D comp = obj.GetComponent<VectorObject2D>();
 		comp.vectorLine = null;
 		return comp;
+	}
+
+	private void generateBasicMapByImage (String name, Sprite sprite) {
+		for (int i = 0; i < _curMap.width * _curMap.height; i++) {
+			int x = i % _curMap.width;
+			int y = i / _curMap.width;
+			Rect tempRect = new Rect(_offsetX + _gridWidth * x, _offsetY + _gridHeight* y, _gridWidth, _gridHeight);
+			generateSprite(tempRect, name, Color.white, sprite);
+		}
+	}
+
+	private void generateSpecialMapImage(List<gridObj> list, Sprite sprite = null) {
+		int width = _curMap.width;
+		int height = _curMap.height;
+		for (int i = 0; i < list.Count; i++) {
+			gridObj prop = list[i];
+			int index = prop.index;
+			String name = prop.gridName;
+			int x = index % _curMap.width;
+			int y = height - index / _curMap.width - 1;
+			Rect tempRect = new Rect(_offsetX + _gridWidth * x, _offsetY + _gridHeight * y, _gridWidth, _gridHeight);
+			prop.sprite = generateSprite(tempRect, name, prop.color, sprite);
+		}
+	}
+
+	public void updatePlayerPosition() {
+		int index = _player[0].index;
+		int x = index % _curMap.width;
+		int y = _curMap.height - index / _curMap.width - 1;
+		_player[0].sprite.GetComponent<RectTransform>().position = new Vector3(_offsetX + _gridWidth * x, _offsetY + _gridHeight * y, 1);
 	}
 
 	// origin at the left-bottom
@@ -198,6 +223,22 @@ public class DrawMap : MonoBehaviour {
 
 		draw.vectorLine.Draw();
 	}
+
+	private GameObject generateSprite(Rect rect, String name = "", Color color = default(Color), Sprite sprite = null) {
+		GameObject obj = Instantiate<GameObject>(gridPrefab);
+		obj.name = name;
+		RectTransform transform = obj.GetComponent<RectTransform>();
+		transform.sizeDelta = new Vector2(rect.width, rect.height);
+		transform.position = new Vector3(rect.x, rect.y, 1);
+
+		Image image = obj.GetComponent<Image>();
+		image.color = color;
+		image.sprite = sprite;
+		obj.transform.parent = mapPanel.transform;
+
+		return obj;
+	}
+
 	// 清空所有的 line 绘制，用于 display 显示关闭
 	public void showMap() {
 		if (GameManager.getInstance().isShow) {
