@@ -16,7 +16,7 @@ public class MoveCtrl : MonoBehaviour {
 	public void setGestureToMove () {
 		GestureCtrl.getInstance().toLeftGesture = moveLeft;
 		GestureCtrl.getInstance().toRightGesture = moveRight;
-		GestureCtrl.getInstance().toBackGesture = null;
+		GestureCtrl.getInstance().toBackGesture = _owner.refuseMoveBack;
 		GestureCtrl.getInstance().toFrontGesture = moveFront;
 		GestureCtrl.getInstance().toCenterGesture = null;
 	}

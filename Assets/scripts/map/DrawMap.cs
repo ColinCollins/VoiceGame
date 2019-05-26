@@ -43,21 +43,27 @@ public class DrawMap : MonoBehaviour {
 		}
 	}
 
-	public void setMap(MapObj map) {
+	public void setMap(MapObj map, utils utilsSys) {
 		_curMap = map;
+		// 更新新的地图数据以及捆绑剧情处理函数
+		if (utilsSys != null) {
+			utilsSys.updateCurMap();
+		}
+
 		float aspect = CanvasCtrl.deviceWidth / CanvasCtrl.deviceHeight;
 		this._gridWidth = Mathf.FloorToInt(CanvasCtrl.deviceWidth / (_curMap.width + 2));
 		this._gridHeight = Mathf.CeilToInt(CanvasCtrl.deviceHeight / (_curMap.height + 2) * aspect) ;
 
 		this._offsetX = Mathf.CeilToInt(this._gridWidth);
 		this._offsetY = Mathf.CeilToInt(_curMap.height / 2 * this._gridHeight);
-
+		GameManagerGlobalData.isFirstTimeGenerateMap = true;
 		parseMapData();
 	}
 
 	// 提供当前地图数据给外部。
 	public MapObj getCurMap() {
-		return new MapObj(_curMap.width, _curMap.height, _curMap.mapData);
+		if (_curMap == null) return null;
+		return new MapObj(_curMap.width, _curMap.height, _curMap.mapData, _curMap.name);
 	}
 
 	// 获取解析后地图数据
@@ -170,6 +176,10 @@ public class DrawMap : MonoBehaviour {
 	}
 	// 因为数据隔离问题，因此 grid 等相关数据被隔离在 drawMap 这个脚本里，这样挺好的，方便修改
 	public void updatePlayerPosition() {
+		if (_player.Count <= 0) {
+			Debug.LogError("Player Map data not exist.");
+			return;
+		}
 		int index = _player[0].index;
 		int x = index % _curMap.width;
 		int y = _curMap.height - index / _curMap.width - 1;

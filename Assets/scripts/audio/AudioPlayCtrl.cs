@@ -104,8 +104,7 @@ public class AudioPlayCtrl : MonoBehaviour
 		public void stopEffect() {
 		if (_effectClipObj == null) return;
 		// To Stop current Playing
-		if (_effectClipObj.player.isPlaying)
-		{
+		if (_effectClipObj.player.isPlaying) {
 			_effectClipObj.player.Stop();
 			if (_effectClipObj.handle != null) _effectClipObj.handle();
 			_effectClipPlayList.RemoveAt(0);

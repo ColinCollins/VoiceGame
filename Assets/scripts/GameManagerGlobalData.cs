@@ -12,5 +12,4 @@ public class GameManagerGlobalData {
 	public static bool isFirstMeetObstacle = true;
 	public static bool isSecondMeetObstacle = true;
 	public static bool isFirstMeetMonster = true;
-	public static bool isFirstMove = true;
 }

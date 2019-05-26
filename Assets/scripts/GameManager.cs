@@ -14,9 +14,9 @@ public class GameManager : MonoBehaviour {
 	public GameObject canvas;
 	#endregion
 	// 当前房间地图
-	private MapObj _curRoom;
 	private static GameManager _instance = null;
 	private GameState _state = GameState.Ready;
+	private utils _utils = null;
 
 	private void Awake() {
 		_instance = this;
@@ -38,6 +38,7 @@ public class GameManager : MonoBehaviour {
 		initAudioCtrl();
 		DrawMap();
 		if (GameManagerGlobalData.isFirstTimeEnter) {
+			setGameState(GameState.Plot);
 			PlayerAudioCtrl.getInstance().play(PlayerAudioData.CHAPTER_01_1);
 			PlayerAudioCtrl.getInstance().play(PlayerAudioData.SLIDER_TO_FRONT_TIPS, initGameState);
 			GameManagerGlobalData.isFirstTimeEnter = false;
@@ -49,15 +50,15 @@ public class GameManager : MonoBehaviour {
 
 	// 绘制 map 地图
 	public void DrawMap() {
-		_curRoom = MapData.getBedRoom();
 		_drawMap.Init();
-		_drawMap.setMap(_curRoom);
+		_utils = new utils(_drawMap);
+		_drawMap.setMap(MapData.getFirstWave(), _utils);
 		_drawMap.draw();
 	}
 	// 初始化游戏与角色状态
 	private void initGameState() {
-		player.Init(_drawMap);
-		_state = GameState.Ready;
+		player.Init();
+		_state = GameState.Playing;
 		// 因为 gesturectrl 会有数据保留，因此这句属于针对性测试代码
 		// GestureCtrl.getInstance().preInit();
 	}
@@ -72,10 +73,12 @@ public class GameManager : MonoBehaviour {
 			isDevelop = false;
 		}
 	}
-	// 游戏结束时仍然能够控制手势功能
+
 	private void Update() {
-		if ( player.getState() == PlayerState.Dead && _state == GameState.GameOver)
+		// 不需要初始化，因为 StartScene 已经初始化过的， 两种情况下对方无法移动
+		if (_state == GameState.Plot || _state == GameState.GameOver && player.getState() == PlayerState.Dead) {
 			GestureCtrl.getInstance().timer();
+		}
 	}
 
 	// 游戏结束
@@ -121,6 +124,18 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void setGameState(GameState state) {
+		Debug.Log("GameState Changed: " + state);
 		_state = state;
+		if (_state == GameState.Plot) {
+			// 方便跳过剧情，通常用于测试
+			GestureCtrl.getInstance().toCenterGesture = AudioPlayCtrl.getInstance().stopEffect;
+		}
+		else if (_state == GameState.Playing) {
+			GestureCtrl.getInstance().toCenterGesture = null;
+		}
+	}
+	// 数据隔离
+	public MapObj getCurMap() {
+		return _drawMap.getCurMap();
 	}
 }

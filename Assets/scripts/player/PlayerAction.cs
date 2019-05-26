@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-// 声明共有的 delegate。 bool 是为了判断当前位置是否可以移动
-public delegate void Action(Player player);
+// 声明共有的 delegate。 bool 是为了判断当前位置是否可以移动, 加入 nextPos 为了同步移动数据，因为 player position 数据更新在 check 之后，因此 action 函数获取不到下一个 pos 位置信息。
+public delegate void Action(Player player, Vector2 nextPos);
 
 public class PlayerAction {
 	// init when the game start
@@ -20,26 +20,17 @@ public class PlayerAction {
 		hitOnWallCount = 0;
 	}
 
-	public void onWalking(Player player, Action handle = null) {
+	public void onWalking(Player player, Vector2 nextPos, Action handle = null) {
 		player.setState(PlayerState.Moving);
-		if (GameManagerGlobalData.isFirstMove) {
-			player.setState(PlayerState.Waiting);
-			PlayerAudioCtrl.getInstance().play(PlayerAudioData.STEP_CLIP);
-			PlayerAudioCtrl.getInstance().play(PlayerAudioData.CHAPTER_01_2, () => {
-				player.setState(PlayerState.Idle);
-			});
-			GameManagerGlobalData.isFirstMove = false;
-		}
-		else {
-			PlayerAudioCtrl.getInstance().play(PlayerAudioData.STEP_CLIP, () => {
-				if (handle != null) handle(player);
-				else player.setState(PlayerState.Idle);
-			});
-		}
+
+		PlayerAudioCtrl.getInstance().play(PlayerAudioData.STEP_CLIP, () => {
+			if (handle != null) handle(player, nextPos);
+			else player.setState(PlayerState.Idle);
+		});
 		return;
 	}
 
-	public void onObstacle(Player player) {
+	public void onObstacle(Player player, Vector2 nextPos) {
 		Debug.Log("Walk on Obstacle");
 		//// 播放机关开启音效
 		if (GameManagerGlobalData.isFirstMeetObstacle)
@@ -77,7 +68,7 @@ public class PlayerAction {
 		player.setState(PlayerState.Idle);
 	}
 
-	public void onMonster(Player player) {
+	public void onMonster(Player player, Vector2 nextPos) {
 		Debug.Log("Walk on Monster");
 		if (GameManagerGlobalData.isFirstMeetMonster) {
 
@@ -88,7 +79,7 @@ public class PlayerAction {
 		player.setState(PlayerState.Idle);
 	}
 
-	public void onWall(Player player) {
+	public void onWall(Player player, Vector2 nextPos) {
 		Debug.Log("Walk hit the Wall");
 		hitOnWallCount++;
 		player.setState(PlayerState.Waiting);
@@ -106,7 +97,7 @@ public class PlayerAction {
 		}
 	}
 
-	public void onExit(Player player) {
+	public void onExit(Player player, Vector2 nextPos) {
 		Debug.Log("Walk exit the room");
 		player.setState(PlayerState.Waiting);
 		// play audio
@@ -117,5 +108,9 @@ public class PlayerAction {
 				GameManager.getInstance().GameOver();
 			});
 		});
+	}
+
+	public void onSpecialPlot(Player player, Vector2 nextPos) {
+
 	}
 }

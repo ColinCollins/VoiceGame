@@ -18,6 +18,7 @@ public class PlayerAudioData {
 	public const string OPEN_DOOR_CLIP = "openDoor";                // 通关门
 	public const string CLOSE_DOOR_CLIP = "closeDoor";              // 关闭门
 	public const string RESTART_GAME_TIPS = "restartGameTips";      // 当死亡时重生音效。暂时的，目前缺少死亡提示音
+	public const string REFUSE_BACK_TIPS = "refuseBackTips";		// 阻止后退
 
 	// Chapter
 	public const string CHAPTER_01_1 = "chapter01_1";
