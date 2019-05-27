@@ -32,7 +32,7 @@ public class AudioPlayCtrl : MonoBehaviour
 	}
 
 	private void Update() {
-		Debug.Log("_EffectClipObj: " + _effectClipObj);
+		// Debug.Log("_EffectClipObj: " + _effectClipObj);
 		autoPlay(ref _effectClipPlayList,ref _effectClipObj);
 		autoPlay(ref _backgroundClipPlayList, ref _backgroundClipObj);
 	}
@@ -54,6 +54,7 @@ public class AudioPlayCtrl : MonoBehaviour
 		// 判断当前播放时间是否超过规定时间
 		clipObj.maxTime -= Time.deltaTime;
 		if (clipObj.maxTime <= 0) {
+			Debug.Log("RemoveCur Obj Name: " + clipObj.clip.name);
 			clipObj.player.Stop();
 			clipList.RemoveAt(0);
 			clipObj.handle();

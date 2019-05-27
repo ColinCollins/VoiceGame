@@ -19,12 +19,12 @@ public class utils {
 
 	public utils(DrawMap manager) {
 		_mapManager = manager;
-		_playerData = _mapManager.getMapData("player");
 		_instance = this;
 	}
 	// 更新当前绑定的地图，并且将更新地图的 delegate 函数
 	public void updateCurMap() {
 		_curMap = _mapManager.getCurMap();
+		_playerData = _mapManager.getMapData("player");
 		updateMapSpecialPlotMethod();
 	}
 
@@ -61,13 +61,20 @@ public class utils {
 	}
 
 	// 关于各个关卡对应剧情点格子处理方案暂时放在这里
-	private void firstMapSpecialPlot(Vector2 pos) {
+	public void firstMapSpecialPlot(Player player) {
+		Vector2 pos = player.getPosition();
 		Debug.Log("firstMapSpecialPlot: " + pos.x + ": " + pos.y);
-		if (pos.x == 11 && pos.y == 14) {
-
+		if (pos.x == 10 && pos.y == 13) {
+			PlayerAudioCtrl.getInstance().play(PlayerAudioData.SLIDER_TO_LEFT_TIPS, () => {
+				player.setState(PlayerState.Idle);
+			});
 		}
-		else if (pos.x == 9 && pos.y == 14) {
-
+		else if (pos.x == 8 && pos.y == 13) {
+			GameManager.getInstance().setGameState(GameState.Plot);
+			PlayerAudioCtrl.getInstance().play(PlayerAudioData.CHAPTER_01_2, () => {
+				player.setState(PlayerState.Idle);
+				GameManager.getInstance().setGameState(GameState.Playing);
+			});
 		}
 	}
 }

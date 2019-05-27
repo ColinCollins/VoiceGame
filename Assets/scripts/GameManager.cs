@@ -75,7 +75,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	private void Update() {
-		// 不需要初始化，因为 StartScene 已经初始化过的， 两种情况下对方无法移动
+		// 不需要初始化，因为 StartScene 已经初始化过的， 两种情况下对方无法移动。但是 plot 会导致已有左右手势的正常运作，因此在  player state 这边修
 		if (_state == GameState.Plot || _state == GameState.GameOver && player.getState() == PlayerState.Dead) {
 			GestureCtrl.getInstance().timer();
 		}
@@ -114,6 +114,14 @@ public class GameManager : MonoBehaviour {
 		GestureCtrl.getInstance().toBackGesture = null;
 	}
 
+	private void switchGestureToPlot() {
+		GestureCtrl.getInstance().toCenterGesture = AudioPlayCtrl.getInstance().stopEffect;
+		GestureCtrl.getInstance().toLeftGesture = null;
+		GestureCtrl.getInstance().toRightGesture = null;
+		GestureCtrl.getInstance().toFrontGesture = null;
+		GestureCtrl.getInstance().toBackGesture = null;
+	}
+
 	// 重新开始游戏
 	static void RestartGame () {
 		SceneManager.LoadScene("MainScene");
@@ -128,7 +136,7 @@ public class GameManager : MonoBehaviour {
 		_state = state;
 		if (_state == GameState.Plot) {
 			// 方便跳过剧情，通常用于测试
-			GestureCtrl.getInstance().toCenterGesture = AudioPlayCtrl.getInstance().stopEffect;
+			switchGestureToPlot();
 		}
 		else if (_state == GameState.Playing) {
 			GestureCtrl.getInstance().toCenterGesture = null;

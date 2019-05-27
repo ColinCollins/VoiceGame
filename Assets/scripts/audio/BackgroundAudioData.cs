@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class BackgroundAudioData {
+﻿public class BackgroundAudioData {
 	// main scene
 	public const string NONE = "";
 	public const string TERROIST_ATMOSPHERE = "Terrorist atmosphere";

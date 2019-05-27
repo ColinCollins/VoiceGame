@@ -7,7 +7,7 @@ public class Player : MonoBehaviour {
 	private Vector2 _pos;
 	private MoveCtrl _moveCtrl = null;
 	private PlayerState _state = PlayerState.None;
-
+	private int _curPosData = 0;
 	private Action runAction;
 
 	public int life = 1;
@@ -21,45 +21,48 @@ public class Player : MonoBehaviour {
 		_pos = utils.getInstance().getPlayerPosition();
 		_moveCtrl.setPosition(_pos);
 		_moveCtrl.setOwner(this);
-		_moveCtrl.setGestureToMove();
+		switchGestureToMove();
 		setState(PlayerState.Idle);
 	}
 
 	// 控制位置,返回值是为了方便 moveCtrl 做同步
 	public bool checkPositionState(int x, int y) {
 		runAction = null;
-		Vector2 nextPos = new Vector2(x, y);
-		bool ableTomove = actionType(nextPos);
-		if (ableTomove) PlayerAction.getInstance().onWalking(this, nextPos, runAction);
-		return ableTomove;
+		int data = utils.getInstance().getGridData(x, y);
+		_curPosData = data;
+		if (data == (int)MapDataState.WALL)
+			return false;
+		return true;
 	}
 
-	private bool actionType(Vector2 nextPos) {
-	
-		int data = utils.getInstance().getGridData((int)nextPos.x, (int)nextPos.y);
-		switch (data) {
+	public void action() {
+		MapDataState curState = (MapDataState)_curPosData;
+		switch (curState) {
 			// 因为初始的数据我们没有做变动,因此 1 也在数据读取的范围之内
-			case 1:
-			case 0:
-				return true;
-			case -1:
+			case MapDataState.PLAYER:
+			case MapDataState.MOVEABLE:
+				break;
+			case MapDataState.WALL:
 				PlayerAction.getInstance().onWall(this);
-				return false;
-			case -2:
+				break;
+			case MapDataState.OBSTACLE:
 				runAction = PlayerAction.getInstance().onObstacle;
-				return true;
-			case 3:
+				break;
+			case MapDataState.EXIT:
 				runAction = PlayerAction.getInstance().onExit;
-				return true;
-			case 4:
+				break;
+			case MapDataState.MONSTER:
 				runAction = PlayerAction.getInstance().onMonster;
-				return true;
-			case 5:
+				break;
+			case MapDataState.SPECIAL_CHAPTER:
 				runAction = PlayerAction.getInstance().onSpecialPlot;
-				return true;
+				break;
 			default:
-				Debug.Log("Can't find the special index" + data);
-				return false;
+				Debug.Log("Can't find the special index" + _curPosData);
+				break;
+		}
+		if (curState != MapDataState.WALL) {
+			PlayerAction.getInstance().onWalking(this, runAction);
 		}
 	}
 
@@ -75,7 +78,7 @@ public class Player : MonoBehaviour {
 	// 因为不想 moveCtrl 与 parry 有关联，保持不同组件间的独立关系
 	public void switchGestureToMove() {
 		if (_moveCtrl != null) 
-			_moveCtrl.setGestureToMove();
+			_moveCtrl.switchGestureToMove();
 	}
 
 	public void refuseMoveBack() {
@@ -100,6 +103,10 @@ public class Player : MonoBehaviour {
 
 	public void setState(PlayerState value) {
 		Debug.Log("Player State changed: " + value);
+		// 进入剧情时，角色进入等待时间
+		if (_state == PlayerState.Waiting) {
+			switchGestureToMove();
+		}
 		if (GameManager.getInstance().getGameState() != GameState.GameOver)
 			_state = value;
 	}

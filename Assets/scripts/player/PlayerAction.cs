@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-// 声明共有的 delegate。 bool 是为了判断当前位置是否可以移动, 加入 nextPos 为了同步移动数据，因为 player position 数据更新在 check 之后，因此 action 函数获取不到下一个 pos 位置信息。
-public delegate void Action(Player player, Vector2 nextPos);
+// 声明共有的 delegate。
+public delegate void Action(Player player);
 
 public class PlayerAction {
 	// init when the game start
@@ -20,17 +20,16 @@ public class PlayerAction {
 		hitOnWallCount = 0;
 	}
 
-	public void onWalking(Player player, Vector2 nextPos, Action handle = null) {
+	public void onWalking(Player player, Action handle = null) {
 		player.setState(PlayerState.Moving);
-
 		PlayerAudioCtrl.getInstance().play(PlayerAudioData.STEP_CLIP, () => {
-			if (handle != null) handle(player, nextPos);
+			if (handle != null) handle(player);
 			else player.setState(PlayerState.Idle);
 		});
 		return;
 	}
 
-	public void onObstacle(Player player, Vector2 nextPos) {
+	public void onObstacle(Player player) {
 		Debug.Log("Walk on Obstacle");
 		//// 播放机关开启音效
 		if (GameManagerGlobalData.isFirstMeetObstacle)
@@ -68,7 +67,7 @@ public class PlayerAction {
 		player.setState(PlayerState.Idle);
 	}
 
-	public void onMonster(Player player, Vector2 nextPos) {
+	public void onMonster(Player player) {
 		Debug.Log("Walk on Monster");
 		if (GameManagerGlobalData.isFirstMeetMonster) {
 
@@ -79,7 +78,7 @@ public class PlayerAction {
 		player.setState(PlayerState.Idle);
 	}
 
-	public void onWall(Player player, Vector2 nextPos) {
+	public void onWall(Player player) {
 		Debug.Log("Walk hit the Wall");
 		hitOnWallCount++;
 		player.setState(PlayerState.Waiting);
@@ -97,7 +96,7 @@ public class PlayerAction {
 		}
 	}
 
-	public void onExit(Player player, Vector2 nextPos) {
+	public void onExit(Player player) {
 		Debug.Log("Walk exit the room");
 		player.setState(PlayerState.Waiting);
 		// play audio
@@ -110,7 +109,9 @@ public class PlayerAction {
 		});
 	}
 
-	public void onSpecialPlot(Player player, Vector2 nextPos) {
-
+	public void onSpecialPlot(Player player) {
+		Debug.Log("Walk on the Special Plot");
+		player.setState(PlayerState.Waiting);
+		utils.getInstance().firstMapSpecialPlot(player);
 	}
 }

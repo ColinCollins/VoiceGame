@@ -66,6 +66,7 @@ public class StartSceneCtrl : MonoBehaviour {
 			changeChoice(true);
 		};
 		bindingUIFeature();
+		GameManagerGlobalData.resetGameGlobalData();
 	}
 
 	private void bindingUIFeature() {
@@ -227,7 +228,6 @@ public class StartSceneCtrl : MonoBehaviour {
 		_state = state;
 		playSystemAudio();
 	}
-
 	#region Test for Gesture
 	//private void OnDrawGizmos() {
 	//	Vector3 startPos = GestureCtrl.getInstance().getStartPos();

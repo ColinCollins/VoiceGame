@@ -12,8 +12,8 @@ public class MoveCtrl : MonoBehaviour {
 			return _isMoving;
 		}
 	}
-
-	public void setGestureToMove () {
+	// 切换手势功能到移动
+	public void switchGestureToMove() {
 		GestureCtrl.getInstance().toLeftGesture = moveLeft;
 		GestureCtrl.getInstance().toRightGesture = moveRight;
 		GestureCtrl.getInstance().toBackGesture = _owner.refuseMoveBack;
@@ -23,9 +23,8 @@ public class MoveCtrl : MonoBehaviour {
 
 	// 外传的计时器
 	public void timer() {
-		Debug.Log("MoveCtrl player state: " + _owner.getState());
+		// Debug.Log("MoveCtrl player state: " + _owner.getState());
 		if (_owner.getState() != PlayerState.Idle) return;
-		// keyBoard to ctrl the moving to update the player index
 		if (PlatformUtils.isKeyBoardUser())
 			keyBoardEvent();
 		// 为了能够有管控，因为 mobile 平台上 gesture 替代了 keyboard 所以要有与之对应的管控。parry 设置同理。
@@ -64,6 +63,7 @@ public class MoveCtrl : MonoBehaviour {
 			this.setPosition(new Vector2(x, y));
 			_owner.setPosition(_pos);
 		}
+		_owner.action();
 		Debug.Log("Left");
 	}
 
@@ -74,6 +74,7 @@ public class MoveCtrl : MonoBehaviour {
 			this.setPosition(new Vector2(x, y));
 			_owner.setPosition(_pos);
 		}
+		_owner.action();
 		Debug.Log("Front");
 	}
 
@@ -84,6 +85,7 @@ public class MoveCtrl : MonoBehaviour {
 			this.setPosition(new Vector2(x, y));
 			_owner.setPosition(_pos);
 		}
+		_owner.action();
 		Debug.Log("Back");
 	}
 
@@ -94,6 +96,7 @@ public class MoveCtrl : MonoBehaviour {
 			this.setPosition(new Vector2(x, y));
 			_owner.setPosition(_pos);
 		}
+		_owner.action();
 		Debug.Log("Right");
 	}
 

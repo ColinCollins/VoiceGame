@@ -45,10 +45,6 @@ public class DrawMap : MonoBehaviour {
 
 	public void setMap(MapObj map, utils utilsSys) {
 		_curMap = map;
-		// 更新新的地图数据以及捆绑剧情处理函数
-		if (utilsSys != null) {
-			utilsSys.updateCurMap();
-		}
 
 		float aspect = CanvasCtrl.deviceWidth / CanvasCtrl.deviceHeight;
 		this._gridWidth = Mathf.FloorToInt(CanvasCtrl.deviceWidth / (_curMap.width + 2));
@@ -58,6 +54,10 @@ public class DrawMap : MonoBehaviour {
 		this._offsetY = Mathf.CeilToInt(_curMap.height / 2 * this._gridHeight);
 		GameManagerGlobalData.isFirstTimeGenerateMap = true;
 		parseMapData();
+		// 更新新的地图数据以及捆绑剧情处理函数
+		if (utilsSys != null) {
+			utilsSys.updateCurMap();
+		}
 	}
 
 	// 提供当前地图数据给外部。
