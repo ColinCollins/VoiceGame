@@ -32,33 +32,26 @@ public class PlayerAction {
 	public void onObstacle(Player player) {
 		Debug.Log("Walk on Obstacle");
 		//// 播放机关开启音效
-		if (GameManagerGlobalData.isFirstMeetObstacle)
-		{
+		if (GameManagerGlobalData.isFirstMeetObstacle) {
 			// 第一次进行格挡
-			PlayerAudioCtrl.getInstance().play(PlayerAudioData.SWITCH_OBSTACLE_CLIP, () =>
-			{
-				PlayerAudioCtrl.getInstance().play(PlayerAudioData.HAVE_TO_PARRY_CLIP, () =>
-				{
+			PlayerAudioCtrl.getInstance().play(PlayerAudioData.SWITCH_OBSTACLE_CLIP, () => {
+				PlayerAudioCtrl.getInstance().play(PlayerAudioData.HAVE_TO_PARRY_CLIP, () => {
 					player.setState(PlayerState.Parry);
 					ArrowDir _arrowDir = Parry.getInstance().startParry();
 					ObstacleAudioCtrl.getInstance().playAudio(_arrowDir);
 				});
 			});
 		}
-		else if (GameManagerGlobalData.isSecondMeetObstacle)
-		{
+		else if (GameManagerGlobalData.isSecondMeetObstacle) {
 			// 第二次进行格挡
-			PlayerAudioCtrl.getInstance().play(PlayerAudioData.SWITCH_OBSTACLE_CLIP, () =>
-			{
+			PlayerAudioCtrl.getInstance().play(PlayerAudioData.SWITCH_OBSTACLE_CLIP, () => {
 				player.setState(PlayerState.Parry);
 				ArrowDir _arrowDir = Parry.getInstance().startParry();
 				ObstacleAudioCtrl.getInstance().playAudio(_arrowDir);
 			});
 		}
-		else
-		{
-			PlayerAudioCtrl.getInstance().play(PlayerAudioData.SWITCH_OBSTACLE_CLIP, () =>
-			{
+		else {
+			PlayerAudioCtrl.getInstance().play(PlayerAudioData.SWITCH_OBSTACLE_CLIP, () => {
 				player.setState(PlayerState.Parry);
 				ArrowDir _arrowDir = Parry.getInstance().startParry();
 				ObstacleAudioCtrl.getInstance().playAudio(_arrowDir);
