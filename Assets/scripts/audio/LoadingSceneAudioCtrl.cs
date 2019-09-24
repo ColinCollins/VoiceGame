@@ -22,6 +22,7 @@ public class LoadingSceneAudioCtrl : AudioClipCtrl {
 
 		AudioPlayObj obj = new AudioPlayObj(selectClip(clipName), this, player, maxTime);
 		AudioPlayCtrl.getInstance().addEffectObj(obj);
+
 		if (method != null) AudioPlayCtrl.getInstance().addCallbackToEffectClip(clipName, method);
 	}
 }

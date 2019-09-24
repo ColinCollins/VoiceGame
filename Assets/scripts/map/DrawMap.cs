@@ -18,7 +18,6 @@ public class DrawMap : MonoBehaviour {
 
 	private int _gridWidth = 0;
 	private int _gridHeight = 0;
-
 	private int _offsetX = 0;
 	private int _offsetY = 0;
 
@@ -38,6 +37,7 @@ public class DrawMap : MonoBehaviour {
 
 	public void Destroy() {
 		int count = mapPanel.transform.childCount;
+
 		for (int i = 0; i < count; i++) {
 			Destroy(mapPanel.transform.GetChild(0).gameObject);
 		}
@@ -52,8 +52,10 @@ public class DrawMap : MonoBehaviour {
 
 		this._offsetX = Mathf.CeilToInt(this._gridWidth);
 		this._offsetY = Mathf.CeilToInt(_curMap.height / 2 * this._gridHeight);
+
 		GameManagerGlobalData.isFirstTimeGenerateMap = true;
 		parseMapData();
+
 		// 更新新的地图数据以及捆绑剧情处理函数
 		if (utilsSys != null) {
 			utilsSys.updateCurMap();
@@ -69,6 +71,7 @@ public class DrawMap : MonoBehaviour {
 	// 获取解析后地图数据
 	public List<gridObj> getMapData(String name) {
 		List<gridObj> tempList;
+
 		switch (name) {
 			case "player":
 				tempList = _player;
@@ -89,10 +92,10 @@ public class DrawMap : MonoBehaviour {
 				Debug.LogWarning("Can't find this data");
 				return null;
 		}
+
 		List<gridObj> newList = new List<gridObj>();
 
-		tempList.ForEach((obj) =>
-		{
+		tempList.ForEach((obj) => {
 			newList.Add(obj);
 		});
 		return newList;
@@ -101,6 +104,7 @@ public class DrawMap : MonoBehaviour {
 	// 绘制地图
 	public void draw() {
 		if (_curMap == null || !GameManager.getInstance().isShow) return;
+
 		if (GameManagerGlobalData.isFirstTimeGenerateMap) {
 			generateBasicMapByImage("floor", floor);
 			generateSpecialMapImage(_walls, wall);
@@ -118,6 +122,7 @@ public class DrawMap : MonoBehaviour {
 	// 分析地图数据
 	public void parseMapData() {
 		int[] mapData = this._curMap.mapData;
+
 		for (int i = 0; i < mapData.Length; i++) {
 			switch (mapData[i]) {
 				// wall
@@ -149,6 +154,7 @@ public class DrawMap : MonoBehaviour {
 		obj.AddComponent<VectorObject2D>();
 		VectorObject2D comp = obj.GetComponent<VectorObject2D>();
 		comp.vectorLine = null;
+
 		return comp;
 	}
 
@@ -164,31 +170,39 @@ public class DrawMap : MonoBehaviour {
 	private void generateSpecialMapImage(List<gridObj> list, Sprite sprite = null) {
 		int width = _curMap.width;
 		int height = _curMap.height;
+
 		for (int i = 0; i < list.Count; i++) {
 			gridObj prop = list[i];
 			int index = prop.index;
 			String name = prop.gridName;
+
 			int x = index % _curMap.width;
 			int y = height - index / _curMap.width - 1;
 			Rect tempRect = new Rect(_offsetX + _gridWidth * x, _offsetY + _gridHeight * y, _gridWidth, _gridHeight);
+
 			prop.sprite = generateSprite(tempRect, name, prop.color, sprite);
 		}
 	}
+
 	// 因为数据隔离问题，因此 grid 等相关数据被隔离在 drawMap 这个脚本里，这样挺好的，方便修改
 	public void updatePlayerPosition() {
 		if (_player.Count <= 0) {
 			Debug.LogError("Player Map data not exist.");
 			return;
 		}
+
 		int index = _player[0].index;
 		int x = index % _curMap.width;
 		int y = _curMap.height - index / _curMap.width - 1;
-		_player[0].sprite.GetComponent<RectTransform>().position = new Vector3(_offsetX + _gridWidth * x, _offsetY + _gridHeight * y, 1);
+
+		Vector3 newPos = new Vector3(_offsetX + _gridWidth * x, _offsetY + _gridHeight * y, 1);
+		_player[0].sprite.GetComponent<RectTransform>().position = newPos;
 	}
 
 	private GameObject generateSprite(Rect rect, String name = "", Color color = default(Color), Sprite sprite = null) {
 		GameObject obj = Instantiate<GameObject>(gridPrefab);
 		obj.name = name;
+
 		RectTransform transform = obj.GetComponent<RectTransform>();
 		transform.sizeDelta = new Vector2(rect.width, rect.height);
 		transform.position = new Vector3(rect.x, rect.y, 1);

@@ -1,7 +1,7 @@
 ﻿// 存储 map 数据对象
 public class MapObj {
-	public delegate void SpecialPlot(Player player);
 
+	public delegate void SpecialPlot(Player player);
 	public string name = "";
 	public int width = 0;
 	public int height = 0;

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MonsterBasic {
-
 	private Player _owner;
 	// 怪物状态切换时间
 	private float _stateSwitchInterval = 5f;
@@ -25,10 +24,12 @@ public class MonsterBasic {
 	public void init(Player player) {
 		_owner = player;
 	}
+
 	// end of Monster State
 	public void killedMonset() {
 
 	}
+
 	// start of Monster State
 	public void encounterMonster() {
 		// 播放怪物声效

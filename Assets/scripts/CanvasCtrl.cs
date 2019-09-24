@@ -19,10 +19,11 @@ public class CanvasCtrl {
 			Debug.LogError("Canvas has been lost.");
 			return;
 		}
+
 		float adjustor = 0f;
 		float _standard_aspect = 0f;
 		float _device_aspect = 0f;
-	
+
 		// 计算宽高比例
 		_standard_aspect = _stdScreenWidth / _stdScreenHeight;
 		_device_aspect = deviceWidth / deviceWidth;

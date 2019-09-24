@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 
 public class ObstacleAudioCtrl : AudioClipCtrl {
+
 	private static ObstacleAudioCtrl _instance = null;
 
 	public static ObstacleAudioCtrl getInstance() {
@@ -18,6 +19,7 @@ public class ObstacleAudioCtrl : AudioClipCtrl {
 		String name = selectedDir(dir);
 		System.String clipName = "";
 		AudioPlayObj obj = null;
+
 		if (dir == ArrowDir.FRONT) {
 			clipName = "frontSword";
 			obj = new AudioPlayObj(selectClip(clipName), this, selectSource(name));
@@ -28,6 +30,7 @@ public class ObstacleAudioCtrl : AudioClipCtrl {
 		}
 
 		AudioPlayCtrl.getInstance().addEffectObj(obj);
+
 		// 教学音频设计需要
 		if (GameManagerGlobalData.isFirstMeetObstacle) {
 			PlayerAudioCtrl.getInstance().play(PlayerAudioData.PARRY_TO_FRONT_TIPS, () => {
@@ -45,6 +48,7 @@ public class ObstacleAudioCtrl : AudioClipCtrl {
 
 	private String selectedDir(ArrowDir dir) {
 		String name = "";
+
 		switch (dir) {
 			// case ArrowDir.BACK: name = "back"; break;
 			case ArrowDir.FRONT: name = "front"; break;

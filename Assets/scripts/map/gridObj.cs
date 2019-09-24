@@ -7,6 +7,7 @@ using System;
 public class gridObj {
 
 	public int index = 0;
+
 	// 特殊对象比如 player 需要自定义格子颜色用户刷新移动，因此需要保留对应颜色数据信息
 	public Color color = Color.white;
 	public String gridName = "";

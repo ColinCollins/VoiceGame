@@ -8,7 +8,6 @@
  *  -2: obstacle (obs),
  *  x: special stuff (特殊道具)
  *  4: Monster
- *  
  *  5: specialChapter 特殊章节剧情或者音效触发
  */
 

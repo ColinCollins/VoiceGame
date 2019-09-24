@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 // 声明共有的 delegate。
 public delegate void Action(Player player);
 
 public class PlayerAction {
-	// init when the game start
+
 	private static PlayerAction _instance = null;
+
 	// 撞墙次数,以后可能有后续的机关功能要加入，因此用 Count 计数
 	private int hitOnWallCount = 0;
 
@@ -31,6 +33,7 @@ public class PlayerAction {
 
 	public void onObstacle(Player player) {
 		Debug.Log("Walk on Obstacle");
+
 		//// 播放机关开启音效
 		if (GameManagerGlobalData.isFirstMeetObstacle) {
 			// 第一次进行格挡
@@ -75,6 +78,7 @@ public class PlayerAction {
 		Debug.Log("Walk hit the Wall");
 		hitOnWallCount++;
 		player.setState(PlayerState.Waiting);
+
 		if (hitOnWallCount == 1) {
 			PlayerAudioCtrl.getInstance().play(PlayerAudioData.HIT_WALL_CLIP, () => {
 				PlayerAudioCtrl.getInstance().play(PlayerAudioData.IS_WALL_CLIP, () => {
@@ -96,8 +100,8 @@ public class PlayerAction {
 		PlayerAudioCtrl.getInstance().play(PlayerAudioData.OPEN_DOOR_CLIP, () => {
 			PlayerAudioCtrl.getInstance().play(PlayerAudioData.STEP_CLIP);
 			PlayerAudioCtrl.getInstance().play(PlayerAudioData.CLOSE_DOOR_CLIP, () => {
-				// 返回主菜单吧
 				GameManager.getInstance().GameOver();
+				// back to main menu
 			});
 		});
 	}

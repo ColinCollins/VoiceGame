@@ -46,7 +46,6 @@ public class test : MonoBehaviour {
 
 	private void testForParam(ref GameObject _obj) {
 		testForSecond(ref _obj);
-		
 	}
 
 	private void testForSecond(ref GameObject _obj) {
@@ -57,5 +56,4 @@ public class test : MonoBehaviour {
 	public void JumpStartScene() {
 		SceneManager.LoadScene("StartScene");
 	}
-	
 }

@@ -11,13 +11,14 @@ public enum ArrowDir {
 	// BACK,		// 4
 	 CENTER			// 5
 }
+
 // 格挡类
 public class Parry {
+
 	public float elapseTime = 6.0f;					// 格挡等待时间
 	public float offsetTime = 2.7f;					// 准确位移格挡时间段
 	public float rangeTime = 2.0f;					// 格挡区间范围
 	public float parryElapseTime = 0.5f;            // 单次格挡间隔时间
-
 	public int maxParryCount = 1;					// 记录单把剑可以坚持格挡成功次数
 
 	private ArrowDir _arrowDir = ArrowDir.CENTER;
@@ -30,7 +31,6 @@ public class Parry {
 	private Image _sliderFillImage = null;
 
 	private bool _firstSuccess = true;				// 初次格挡成功
-
 	private int _parrySuccessCount = 0;				// 当前刀刃成功格挡次数
 
 	private static Parry _instance = null;
@@ -44,25 +44,29 @@ public class Parry {
 
 	public void init(Player player) {
 		_owner = player;
+		_isParry = false;
+		_firstSuccess = true;
 		_sliderBar = player.sliderBar;
 		_sliderFillImage = _sliderBar.targetGraphic.transform.GetComponent<Image>();
-		_firstSuccess = true;
-		_isParry = false;
 	}
 
 	public ArrowDir startParry() {
 		_arrowDir = getArrowDir();
+
 		// slider state
 		_sliderBar.value = 1;
 		_curTime = 0;
 		_sliderFillImage.color = Color.white;
+
 		if (!GameManagerGlobalData.isFirstMeetObstacle && !GameManagerGlobalData.isSecondMeetObstacle)
 			_isParry = true;
+
 		// 设置格挡手势功能调用
 		setGestureToParry();
 
 		return _arrowDir;
 	}
+
 	// flag 用于判断，当前格挡状态是成功还是失败
 	public void endParry(bool flag) {
 		if (flag) {
@@ -70,11 +74,13 @@ public class Parry {
 			PlayerAudioCtrl.getInstance().play(PlayerAudioData.PARRY_CLIP, () => {
 				if (!_firstSuccess) _owner.setState(PlayerState.Idle);
 			});
+
 			// 成功格挡次数 + 1
 			_parrySuccessCount++;
 			if (getSwordRemainCount() == 1) {
 				PlayerAudioCtrl.getInstance().play(PlayerAudioData.SWORD_WILL_BREAK_CLIP);
 			}
+
 			// 播放初次格挡成功音效
 			if (_firstSuccess) {
 				PlayerAudioCtrl.getInstance().play(PlayerAudioData.ESCAPE_CLIP, () => {
@@ -82,6 +88,7 @@ public class Parry {
 					_owner.setState(PlayerState.Idle);
 				});
 			}
+
 			_isParry = false;
 			ProjectUtils.Log("Parry Success");
 		}
@@ -89,13 +96,14 @@ public class Parry {
 			PlayerAudioCtrl.getInstance().play(PlayerAudioData.HURT_CLIP, () => {
 				if (_owner.getLife() != 2) _owner.setLife(-1);
 			});
-			
+
 			if (_owner.getLife() == 2) {
 				PlayerAudioCtrl.getInstance().play(PlayerAudioData.EXCITATION_CLIP, () => {
 					_owner.setState(PlayerState.Idle);
 					_owner.setLife(-1);
 				});
 			}
+
 			_isParry = false;
 			ProjectUtils.Log("Parry Failed");
 		}
@@ -107,7 +115,9 @@ public class Parry {
 
 	public ArrowDir getArrowDir() {
 		int num = (int)UnityEngine.Random.Range(0, 3);
-		Debug.Log("ArrowDir: " + num);
+
+		// Debug.Log("ArrowDir: " + num);
+
 		if (GameManagerGlobalData.isFirstMeetObstacle) {
 			return ArrowDir.FRONT;
 		}
@@ -115,8 +125,7 @@ public class Parry {
 			return ArrowDir.LEFT;
 		}
 		else {
-			switch (num)
-			{
+			switch (num) {
 				case 0: return ArrowDir.LEFT;
 				case 1: return ArrowDir.FRONT;
 				// case 2: return ArrowDir.BACK;
@@ -129,10 +138,12 @@ public class Parry {
 
 	public void timer() {
 		if (!_isParry) return;
+
 		float dt = Time.deltaTime;
 		_curTime += dt;
 		_restTime -= dt;
 		sliderEffect();
+
 		if (_curTime <= elapseTime && _restTime <= 0) {
 			if (PlatformUtils.isKeyBoardUser())
 				keyBoardEvent();
@@ -179,6 +190,7 @@ public class Parry {
 	private bool inTimeRange() {
 		return (_curTime >= (offsetTime - rangeTime)) && (_curTime <= (offsetTime + rangeTime)) && _curTime < elapseTime;
 	}
+
 	// 交由外部控制 _Parry 属性
 	public void setParry(bool isParry) {
 		_isParry = isParry;
@@ -202,6 +214,7 @@ public class Parry {
 		if (_parrySuccessCount > maxParryCount) return 0;
 		return maxParryCount - _parrySuccessCount;
 	}
+
 	// 重置剑的寿命
 	public void setNewSword() {
 		_parrySuccessCount = 0;

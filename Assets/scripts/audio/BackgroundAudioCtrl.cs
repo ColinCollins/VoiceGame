@@ -12,7 +12,6 @@ public class BackgroundAudioCtrl : AudioClipCtrl {
 	private float _atomDiffPitchValue = 0;
 	private float _atomGolPitchValue = 0;
 	private float _interDeltaTime = 0;
-
 	private float _atomElapseTime = 15.0f;
 	private float _curSpeadTime = 0.0f;
 
@@ -35,6 +34,7 @@ public class BackgroundAudioCtrl : AudioClipCtrl {
 		_rainPlayRaining();
 		// randomAtomEffect();
 		_curSpeadTime -= Time.deltaTime;
+
 		if (_curSpeadTime <= 0) {
 			_curSpeadTime = _atomElapseTime;
 			_atom.Play();
@@ -73,18 +73,22 @@ public class BackgroundAudioCtrl : AudioClipCtrl {
 			_atomDiffPitchValue /= _interDeltaTime;
 		}
 	}
+
 	// 添加背景音乐播放
 	public override void play(System.String clipName, callback method = null) {
 		if (audioPlayers.Count <= 0 || clips.Count <= 0) return;
 		float maxTime = -1;
 		AudioSource player = _atom;
+
 		switch (clipName) {
 			case "":
 				player.clip = null;
 				return;
 		}
+
 		AudioPlayObj obj = new AudioPlayObj(selectClip(clipName), this, player, maxTime);
 		AudioPlayCtrl.getInstance().addBackgroundObj(obj);
+
 		if (method != null) AudioPlayCtrl.getInstance().addCallbackToBackgroundClip(clipName, method);
 	}
 }

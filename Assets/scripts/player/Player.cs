@@ -5,10 +5,10 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour {
 	private Vector2 _pos;
+	private Action runAction;
+	private int _curPosData = 0;
 	private MoveCtrl _moveCtrl = null;
 	private PlayerState _state = PlayerState.None;
-	private int _curPosData = 0;
-	private Action runAction;
 
 	public int life = 1;
 	public Slider sliderBar;
@@ -17,6 +17,7 @@ public class Player : MonoBehaviour {
 		Parry.getInstance().init(this);
 		PlayerAction.getInstance().init();
 		_moveCtrl = this.GetComponent<MoveCtrl>();
+
 		// 在 GameManager 的 init 阶段初始化 utils
 		_pos = utils.getInstance().getPlayerPosition();
 		_moveCtrl.setPosition(_pos);
@@ -37,8 +38,9 @@ public class Player : MonoBehaviour {
 
 	public void action() {
 		MapDataState curState = (MapDataState)_curPosData;
+
+		// 因为初始的数据我们没有做变动,因此 1 也在数据读取的范围之内
 		switch (curState) {
-			// 因为初始的数据我们没有做变动,因此 1 也在数据读取的范围之内
 			case MapDataState.PLAYER:
 			case MapDataState.MOVEABLE:
 				break;
@@ -77,7 +79,7 @@ public class Player : MonoBehaviour {
 
 	// 因为不想 moveCtrl 与 parry 有关联，保持不同组件间的独立关系
 	public void switchGestureToMove() {
-		if (_moveCtrl != null) 
+		if (_moveCtrl != null)
 			_moveCtrl.switchGestureToMove();
 	}
 
@@ -103,6 +105,7 @@ public class Player : MonoBehaviour {
 
 	public void setState(PlayerState value) {
 		Debug.Log("Player State changed: " + value);
+
 		// 进入剧情时，角色进入等待时间
 		if (_state == PlayerState.Waiting) {
 			switchGestureToMove();

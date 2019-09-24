@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// 相关音频名称
 public class PlayerAudioData {
 	public const string STEP_CLIP = "step";							// 走路
 	public const string HURT_CLIP = "hurt";                         // 受伤

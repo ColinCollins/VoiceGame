@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// 开始菜单音频名称
 public class StartSceneAudioData {
 	public const string ADDQQ = "addQQ";
 	public const string CONTACT_OFFICE = "contactOffice";

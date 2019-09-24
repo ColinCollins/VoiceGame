@@ -4,12 +4,13 @@ using UnityEngine;
 using System;
 
 public class PlayerAudioCtrl : AudioClipCtrl {
+
 	// 因为和 player 的状态相关，所以需要添加相应的状态控制。
 	public Player owner = null;
 	private static PlayerAudioCtrl _instance = null;
 	private AudioSource _center = null;
 	private AudioSource _switch = null;
-	
+
 	public static PlayerAudioCtrl getInstance() {
 		return _instance;
 	}
@@ -32,6 +33,7 @@ public class PlayerAudioCtrl : AudioClipCtrl {
 		if (audioPlayers.Count <= 0 || clips.Count <= 0) return;
 		float maxTime = -1;
 		AudioSource player = _center;
+
 		// specific clip data. switch 的传入判断值必须在运行时就已经是既定值，即 const 不能作为判断对象。
 		switch (clipName) {
 			case PlayerAudioData.SWITCH_OBSTACLE_CLIP:

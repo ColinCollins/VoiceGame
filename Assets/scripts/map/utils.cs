@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 // 辅助工具类，作为 DrawMap 部分数据对外的接口管理类
 public class utils {
 
@@ -21,6 +22,7 @@ public class utils {
 		_mapManager = manager;
 		_instance = this;
 	}
+
 	// 更新当前绑定的地图，并且将更新地图的 delegate 函数
 	public void updateCurMap() {
 		_curMap = _mapManager.getCurMap();
@@ -47,6 +49,7 @@ public class utils {
 		int y = _playerData[0].index / _curMap.width;
 		return new Vector2(x, y);
 	}
+
 	// 考虑到地图更换
 	public void updateMapSpecialPlotMethod() {
 		if (_curMap == null) return;
@@ -63,7 +66,8 @@ public class utils {
 	// 关于各个关卡对应剧情点格子处理方案暂时放在这里
 	public void firstMapSpecialPlot(Player player) {
 		Vector2 pos = player.getPosition();
-		Debug.Log("firstMapSpecialPlot: " + pos.x + ": " + pos.y);
+		// Debug.Log("firstMapSpecialPlot: " + pos.x + ": " + pos.y);
+
 		if (pos.x == 10 && pos.y == 13) {
 			PlayerAudioCtrl.getInstance().play(PlayerAudioData.SLIDER_TO_LEFT_TIPS, () => {
 				player.setState(PlayerState.Idle);

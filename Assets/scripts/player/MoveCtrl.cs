@@ -12,6 +12,7 @@ public class MoveCtrl : MonoBehaviour {
 			return _isMoving;
 		}
 	}
+
 	// 切换手势功能到移动
 	public void switchGestureToMove() {
 		GestureCtrl.getInstance().toLeftGesture = moveLeft;
@@ -23,10 +24,10 @@ public class MoveCtrl : MonoBehaviour {
 
 	// 外传的计时器
 	public void timer() {
-		// Debug.Log("MoveCtrl player state: " + _owner.getState());
 		if (_owner.getState() != PlayerState.Idle) return;
 		if (PlatformUtils.isKeyBoardUser())
 			keyBoardEvent();
+
 		// 为了能够有管控，因为 mobile 平台上 gesture 替代了 keyboard 所以要有与之对应的管控。parry 设置同理。
 		GestureCtrl.getInstance().timer();
 	}
@@ -41,6 +42,7 @@ public class MoveCtrl : MonoBehaviour {
 
 	private void gestureEvent() { }
 
+	#region Move Ctrl
 	private void keyBoardEvent() {
 		if (Input.GetKeyDown(KeyCode.UpArrow)) {
 			moveFront();
@@ -99,6 +101,8 @@ public class MoveCtrl : MonoBehaviour {
 		_owner.action();
 		Debug.Log("Right");
 	}
+
+	#endregion
 
 	public void startMoving() {
 		_isMoving = true;
